@@ -1,4 +1,4 @@
-package redis_storage
+package sredis
 
 import (
 	"fmt"
