@@ -8,7 +8,7 @@ But let's go through the definition again.
 
 If you know bitcoin/blockchain you will know it's quite similar with Event Sourcing.
 
-> Your current balance is calculated from a series of events in history
+> Your current balance (Application State) is calculated from a series of events in history (in the chain)
 ![Alt Text](https://thepracticaldev.s3.amazonaws.com/i/ztik9xqelulsh4lx3kl9.png)
 
 so you don't have a table like this in database
@@ -26,11 +26,11 @@ now you have
 |user buy 5 items event|
 |user y top-up event|
 
-I've read many articles/blog post about Event Sourcing but never seen any real-world example
-So I create a sample app to experiment with.
+I've read many articles/blog posts about Event Sourcing so I try to make once.
 
 ## What we will build?
 Let's say you have an e-commerce website and users can buy items from your website.
+Source: https://github.com/felixvo/lmax
 
 Entities:  
 - `User` will have `balance`.
@@ -46,7 +46,7 @@ Events:
 ```
 ├── cmd
 │   ├── consumer       # process events
-│   │   ├── handler
+│   │   ├── handler    # handle new event base on event Type
 │   │   └── state
 │   └── producer       # publish events
 └── pkg
@@ -91,4 +91,10 @@ Now if you stop the app and start it again, the application state will restore f
 
 Thank you for reading!
 I hope the source code is clean enough for you to understand :scream:
+
+## Thoughts
+Did you curious why I name my repository `lmax`?
+By the time I write this post, I'm researching about this [LMAX architecture](https://martinfowler.com/articles/lmax.html) [Github](https://github.com/LMAX-Exchange/disruptor/wiki).
+It's quite interesting. Currently, I fetch new events and push to a `channel`,  we can use `LMAX Disruptor` to optimize the latency but there is no stable implement of `LMAX Disruptor` in `go`.
+
 
