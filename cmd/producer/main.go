@@ -8,6 +8,10 @@ import (
 	"time"
 )
 
+const (
+	MaxUserIDRange = 10000
+)
+
 func main() {
 	client, err := newRedisClient()
 	if err != nil {
@@ -27,7 +31,7 @@ func main() {
 }
 func Topup(client *redis.Client) {
 	for i := 0; i < 10; i++ {
-		userID := int64(i + 1)
+		userID := int64(rand.Intn(MaxUserIDRange))
 		strCMD := client.XAdd(&redis.XAddArgs{
 			Stream: "orders",
 			Values: map[string]interface{}{
@@ -79,7 +83,7 @@ func MakeOrders(client *redis.Client) {
 	for i := 0; i < 10; i++ {
 		itemID := []string{"cpu", "ram", "hdd", "ssd"}[rand.Intn(4)]
 		count := uint(rand.Intn(50))
-		userID := int64(rand.Intn(10) + 1)
+		userID := int64(rand.Intn(MaxUserIDRange))
 		strCMD := client.XAdd(&redis.XAddArgs{
 			Stream: "orders",
 			Values: map[string]interface{}{

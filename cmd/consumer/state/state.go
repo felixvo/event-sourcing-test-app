@@ -29,7 +29,11 @@ func (s *State) SetItems(items map[string]*warehouse.Item) {
 }
 
 func (s *State) GetUserByID(id int64) *user.User {
-	return s.Users[id]
+	u, exist := s.Users[id]
+	if !exist {
+		return &user.User{}
+	}
+	return u
 }
 
 func (s *State) GetItem(id string) *warehouse.Item {
