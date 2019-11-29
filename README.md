@@ -1,4 +1,5 @@
 # Event Sourcing with Go and Redis
+NOTE: This code is not tested, just an experiment
 
 I thought you already heard about Event Sourcing in the past recent year.
 But let's go through the definition again.
