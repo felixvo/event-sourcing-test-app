@@ -6,19 +6,37 @@ import (
 )
 
 type State struct {
-	users map[int64]*user.User
-	items map[string]*warehouse.Item
+	LatestEventID string
+	Users         map[int64]*user.User
+	Items         map[string]*warehouse.Item
+}
+
+func (s *State) SetLatestEventID(id string) {
+	s.LatestEventID = id
+}
+func (s *State) GetLatestEventID() string {
+	return s.LatestEventID
+}
+
+// for inital state, state should calculated from events
+func (s *State) SetUsers(users map[int64]*user.User) {
+	s.Users = users
+}
+
+// for inital state, state should calculated from events
+func (s *State) SetItems(items map[string]*warehouse.Item) {
+	s.Items = items
 }
 
 func (s *State) GetUserByID(id int64) *user.User {
-	return s.users[id]
+	return s.Users[id]
 }
 
 func (s *State) GetItem(id string) *warehouse.Item {
-	return s.items[id]
+	return s.Items[id]
 }
 
-func (s *State) GetItems(ids []string) ([]*warehouse.Item) {
+func (s *State) GetItems(ids []string) []*warehouse.Item {
 	rs := make([]*warehouse.Item, len(ids))
 	for i, id := range ids {
 		if item := s.GetItem(id); item != nil {
