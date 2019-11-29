@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+
 	"github.com/felixvo/lmax/pkg/event"
 	"github.com/go-redis/redis/v7"
-	"math/rand"
-	"time"
 )
 
 const (
@@ -18,16 +18,9 @@ func main() {
 		panic(err)
 	}
 
-	d := time.After(time.Second * 30)
-
-	go func() {
-		for {
-			Topup(client)
-			AddItem(client)
-			MakeOrders(client)
-		}
-	}()
-	<-d
+	Topup(client)
+	AddItem(client)
+	MakeOrders(client)
 }
 func Topup(client *redis.Client) {
 	for i := 0; i < 10; i++ {
@@ -74,7 +67,7 @@ func AddItem(client *redis.Client) {
 		if err != nil {
 			fmt.Printf("add item error:%v\n", err)
 		} else {
-			fmt.Printf("ad item success itemID:%v count:%v offset:%v\n", itemID, count, newID)
+			fmt.Printf("add item success itemID:%v count:%v offset:%v\n", itemID, count, newID)
 		}
 	}
 }

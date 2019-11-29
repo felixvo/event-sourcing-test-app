@@ -2,6 +2,10 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/felixvo/lmax/cmd/consumer/handler"
 	"github.com/felixvo/lmax/cmd/consumer/state"
 	"github.com/felixvo/lmax/pkg/event"
@@ -9,9 +13,6 @@ import (
 	"github.com/felixvo/lmax/pkg/user"
 	"github.com/felixvo/lmax/pkg/warehouse"
 	"github.com/go-redis/redis/v7"
-	"strconv"
-	"strings"
-	"time"
 )
 
 const (
@@ -129,4 +130,18 @@ func initialState(snapshotSrv snapshot.Snapshot) *state.State {
 		fmt.Printf("itemID:%v remain:%v price:%v \n", item.ID, item.Remain, item.Price)
 	}
 	return &st
+}
+
+func newRedisClient() (*redis.Client, error) {
+	client := redis.NewClient(&redis.Options{
+		//Addr:     "redis-14450.c1.asia-northeast1-1.gce.cloud.redislabs.com:14450",
+		//Password: "37uaACndCvuQ1heADnHkishnAhMmosWq", // no password set
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0, // use default DB
+	})
+
+	_, err := client.Ping().Result()
+	return client, err
+
 }
