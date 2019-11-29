@@ -3,18 +3,21 @@ package event
 import "fmt"
 
 func New(t Type) (Event, error) {
+	b := &Base{
+		Type: t,
+	}
 	switch t {
 	case OrderType:
 		return &OrderEvent{
-			Base: &Base{},
+			Base: b,
 		}, nil
 	case TopUpType:
 		return &TopUp{
-			Base: &Base{},
+			Base: b,
 		}, nil
 	case AddItemType:
 		return &AddItem{
-			Base: &Base{},
+			Base: b,
 		}, nil
 	}
 

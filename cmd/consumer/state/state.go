@@ -1,8 +1,8 @@
 package state
 
 import (
-	"github.com/felixvo/lmax/cmd/pkg/user"
-	"github.com/felixvo/lmax/cmd/pkg/warehouse"
+	"github.com/felixvo/lmax/pkg/user"
+	"github.com/felixvo/lmax/pkg/warehouse"
 )
 
 type State struct {

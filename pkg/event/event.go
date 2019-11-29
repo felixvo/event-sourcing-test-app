@@ -13,6 +13,7 @@ const (
 // Event --
 type Event interface {
 	GetID() string
+	GetType() Type
 	SetID(id string)
 	encoding.BinaryMarshaler
 	encoding.BinaryUnmarshaler

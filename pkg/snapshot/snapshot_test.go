@@ -2,9 +2,9 @@ package snapshot
 
 import (
 	"fmt"
-	"github.com/felixvo/lmax/cmd/pkg/state"
-	"github.com/felixvo/lmax/cmd/pkg/user"
-	"github.com/felixvo/lmax/cmd/pkg/warehouse"
+	"github.com/felixvo/lmax/cmd/consumer/state"
+	"github.com/felixvo/lmax/pkg/user"
+	"github.com/felixvo/lmax/pkg/warehouse"
 	"github.com/go-redis/redis/v7"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -45,10 +45,10 @@ func TestRedisSnapshot(t *testing.T) {
 			Remain: 150,
 		},
 	})
-	err := snapshotSrv.Snapshot(*st)
+	err := Snapshot(*st)
 	assert.NoError(t, err)
 	restore := state.State{}
-	err = snapshotSrv.Restore(&restore)
+	err = Restore(&restore)
 	assert.NoError(t, err)
 	fmt.Println(restore.LatestEventID)
 	for _, u := range restore.Users {

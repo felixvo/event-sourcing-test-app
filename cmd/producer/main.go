@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/felixvo/lmax/cmd/pkg/event"
+	"github.com/felixvo/lmax/pkg/event"
 	"github.com/go-redis/redis/v7"
 	"math/rand"
 	"time"
@@ -33,6 +33,9 @@ func Topup(client *redis.Client) {
 			Values: map[string]interface{}{
 				"type": string(event.TopUpType),
 				"data": &event.TopUp{
+					Base: &event.Base{
+						Type: event.TopUpType,
+					},
 					UserID: userID,
 					Amount: 500,
 				},
@@ -55,6 +58,9 @@ func AddItem(client *redis.Client) {
 			Values: map[string]interface{}{
 				"type": string(event.AddItemType),
 				"data": &event.AddItem{
+					Base: &event.Base{
+						Type: event.AddItemType,
+					},
 					ItemID: itemID,
 					Count:  count,
 				},
@@ -79,6 +85,9 @@ func MakeOrders(client *redis.Client) {
 			Values: map[string]interface{}{
 				"type": string(event.OrderType),
 				"data": &event.OrderEvent{
+					Base: &event.Base{
+						Type: event.OrderType,
+					},
 					UserID:         userID,
 					ItemIDs:        []string{itemID},
 					ItemQuantities: []uint{count},

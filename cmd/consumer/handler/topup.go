@@ -2,9 +2,9 @@ package handler
 
 import (
 	"fmt"
-	"github.com/felixvo/lmax/cmd/pkg/event"
-	"github.com/felixvo/lmax/cmd/pkg/state"
-	"github.com/felixvo/lmax/cmd/pkg/user"
+	"github.com/felixvo/lmax/cmd/consumer/state"
+	"github.com/felixvo/lmax/pkg/event"
+	"github.com/felixvo/lmax/pkg/user"
 )
 
 type topupHandler struct {

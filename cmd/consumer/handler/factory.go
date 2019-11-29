@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"github.com/felixvo/lmax/cmd/pkg/event"
-	"github.com/felixvo/lmax/cmd/pkg/state"
+	"github.com/felixvo/lmax/cmd/consumer/state"
+	"github.com/felixvo/lmax/pkg/event"
 )
 
 func HandlerFactory(st *state.State) func(t event.Type) Handler {
