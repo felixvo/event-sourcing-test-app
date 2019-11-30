@@ -29,7 +29,7 @@ func (h *topupHandler) Handle(e event.Event) error {
 	u, exist := h.state.Users[topup.UserID]
 	if !exist { // should have an event to create user before use
 		u = &user.User{
-			UseID:   topup.UserID,
+			UserID:   topup.UserID,
 			Balance: 0,
 		}
 		h.state.Users[topup.UserID] = u

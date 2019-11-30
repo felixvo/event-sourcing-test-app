@@ -3,8 +3,8 @@ package event
 import "fmt"
 
 type Base struct {
-	ID   string
-	Type Type
+	ID   string `json:"id"`
+	Type Type   `json:"type"`
 }
 
 func (o *Base) GetID() string {

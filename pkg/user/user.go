@@ -1,6 +1,6 @@
 package user
 
 type User struct {
-	UseID   int64
-	Balance uint
+	UserID  int64 `json:"user_id"`
+	Balance uint  `json:"balance"`
 }

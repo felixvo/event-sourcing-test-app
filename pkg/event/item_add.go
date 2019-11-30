@@ -4,8 +4,8 @@ import "github.com/vmihailenco/msgpack/v4"
 
 type AddItem struct {
 	*Base
-	ItemID string
-	Count  uint
+	ItemID string `json:"item_id"`
+	Count  uint   `json:"count"`
 }
 
 func (o *AddItem) MarshalBinary() (data []byte, err error) {

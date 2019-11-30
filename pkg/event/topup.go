@@ -4,8 +4,8 @@ import "github.com/vmihailenco/msgpack/v4"
 
 type TopUp struct {
 	*Base
-	UserID int64
-	Amount uint
+	UserID int64 `json:"user_id"`
+	Amount uint  `json:"amount"`
 }
 
 func (o *TopUp) MarshalBinary() (data []byte, err error) {

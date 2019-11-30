@@ -6,9 +6,9 @@ import (
 )
 
 type State struct {
-	LatestEventID string
-	Users         map[int64]*user.User
-	Items         map[string]*warehouse.Item
+	LatestEventID string                     `json:"latest_event_id"`
+	Users         map[int64]*user.User       `json:"users"`
+	Items         map[string]*warehouse.Item `json:"items"`
 }
 
 func (s *State) SetLatestEventID(id string) {

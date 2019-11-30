@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/felixvo/lmax/cmd/consumer/api"
+	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
 	"time"
@@ -33,10 +35,19 @@ func main() {
 	events := eventFetcher(client, st)
 
 	// start consume events
-	consumeEvents(events, handler.HandlerFactory(st))
+	result := make(chan *event.HandleEventResult)
+	go consumeEvents(events, handler.HandlerFactory(st), result)
 
-	quit := make(chan bool)
-	<-quit
+	// web api
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
+	r.GET("/events", api.ListEvents(result))
+	r.GET("/state", api.NewCurrentStateHandler(st))
+	r.Run(":8081")
 }
 func exeSnapshot(st *state.State, snapshotSrv snapshot.Snapshot) {
 	ticker := time.Tick(time.Second * 30)
@@ -99,7 +110,7 @@ func eventFetcher(client *redis.Client, st *state.State) chan event.Event {
 	return c
 }
 
-func consumeEvents(events chan event.Event, handlerFactory func(t event.Type) handler.Handler) {
+func consumeEvents(events chan event.Event, handlerFactory func(t event.Type) handler.Handler, result chan *event.HandleEventResult) {
 	for {
 		select {
 		case e := <-events:
@@ -108,6 +119,7 @@ func consumeEvents(events chan event.Event, handlerFactory func(t event.Type) ha
 			if err != nil {
 				fmt.Printf("handle event error eventType:%v err:%v\n", e.GetType(), err)
 			}
+			result <- &event.HandleEventResult{Event: e, Err: err}
 		}
 	}
 }
@@ -124,7 +136,7 @@ func initialState(snapshotSrv snapshot.Snapshot) *state.State {
 	}
 	fmt.Println("state restored ")
 	for _, u := range st.Users {
-		fmt.Printf("userID:%v balance:%v \n", u.UseID, u.Balance)
+		fmt.Printf("userID:%v balance:%v \n", u.UserID, u.Balance)
 	}
 	for _, item := range st.Items {
 		fmt.Printf("itemID:%v remain:%v price:%v \n", item.ID, item.Remain, item.Price)
