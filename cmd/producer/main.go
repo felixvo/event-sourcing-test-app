@@ -1,10 +1,8 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
-
-	"github.com/felixvo/lmax/pkg/event"
+	"github.com/felixvo/lmax/cmd/producer/api"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v7"
 )
 
@@ -17,93 +15,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	Topup(client)
-	AddItem(client)
-	MakeOrders(client)
-}
-func Topup(client *redis.Client) {
-	for i := 0; i < 10; i++ {
-		userID := int64(rand.Intn(MaxUserIDRange))
-		strCMD := client.XAdd(&redis.XAddArgs{
-			Stream: "orders",
-			Values: map[string]interface{}{
-				"type": string(event.TopUpType),
-				"data": &event.TopUp{
-					Base: &event.Base{
-						Type: event.TopUpType,
-					},
-					UserID: userID,
-					Amount: 500,
-				},
-			},
+	r := gin.Default()
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
 		})
-		newID, err := strCMD.Result()
-		if err != nil {
-			fmt.Printf("topup error:%v\n", err)
-		} else {
-			fmt.Printf("topup success for user:%v offset:%v\n", userID, newID)
-		}
-	}
-}
-func AddItem(client *redis.Client) {
-	for i := 0; i < 10; i++ {
-		itemID := []string{"cpu", "ram", "hdd", "ssd"}[rand.Intn(4)]
-		count := uint(rand.Intn(50))
-		strCMD := client.XAdd(&redis.XAddArgs{
-			Stream: "orders",
-			Values: map[string]interface{}{
-				"type": string(event.AddItemType),
-				"data": &event.AddItem{
-					Base: &event.Base{
-						Type: event.AddItemType,
-					},
-					ItemID: itemID,
-					Count:  count,
-				},
-			},
-		})
-		newID, err := strCMD.Result()
-		if err != nil {
-			fmt.Printf("add item error:%v\n", err)
-		} else {
-			fmt.Printf("add item success itemID:%v count:%v offset:%v\n", itemID, count, newID)
-		}
-	}
+	})
+	r.POST("/event/publish",api.NewPublisherHandler(client))
+	r.Run(":8080") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
-func MakeOrders(client *redis.Client) {
-	for i := 0; i < 10; i++ {
-		itemID := []string{"cpu", "ram", "hdd", "ssd"}[rand.Intn(4)]
-		count := uint(rand.Intn(50))
-		userID := int64(rand.Intn(MaxUserIDRange))
-		strCMD := client.XAdd(&redis.XAddArgs{
-			Stream: "orders",
-			Values: map[string]interface{}{
-				"type": string(event.OrderType),
-				"data": &event.OrderEvent{
-					Base: &event.Base{
-						Type: event.OrderType,
-					},
-					UserID:         userID,
-					ItemIDs:        []string{itemID},
-					ItemQuantities: []uint{count},
-				},
-			},
-		})
-		newID, err := strCMD.Result()
-		if err != nil {
-			fmt.Printf("add item error:%v\n", err)
-		} else {
-			fmt.Printf("make order success userID:%v itemID:%v count:%v offset:%v\n", userID, itemID, count, newID)
-		}
-		//time.Sleep(time.Second * 2)
-	}
-}
 func newRedisClient() (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
-		//Addr:     "redis-14450.c1.asia-northeast1-1.gce.cloud.redislabs.com:14450",
-		//Password: "37uaACndCvuQ1heADnHkishnAhMmosWq", // no password set
 		Addr:     "localhost:6379",
 		Password: "",
 		DB:       0, // use default DB
