@@ -7,7 +7,7 @@ import PublisEvent from "../components/PublistEvent";
 
 const Home = () => (
     <div>
-        <Grid container spacing={1}>
+        <Grid container spacing={3}>
             <Grid item xs={6}>
                 <Paper>
                     <h3>List Events:</h3>

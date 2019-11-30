@@ -54,16 +54,13 @@ func main() {
 func exeSnapshot(st *state.State, snapshotSrv snapshot.Snapshot) {
 	ticker := time.Tick(time.Second * 30)
 	for {
-		select {
-		case <-ticker:
-			err := snapshotSrv.Snapshot(st)
-			if err != nil {
-				fmt.Println("snapshot failed:", err)
-				break
-			}
-			fmt.Println("snapshot success:", st.LatestEventID, " at ", time.Now())
+		<-ticker
+		err := snapshotSrv.Snapshot(st)
+		if err != nil {
+			fmt.Println("snapshot failed:", err)
+			break
 		}
-
+		fmt.Println("snapshot success:", st.LatestEventID, " at ", time.Now())
 	}
 }
 
@@ -107,6 +104,7 @@ func eventFetcher(client *redis.Client, st *state.State) chan event.Event {
 					c <- e
 				}
 			}()
+			time.Sleep(time.Microsecond * 300)
 		}
 	}()
 	return c
@@ -114,15 +112,16 @@ func eventFetcher(client *redis.Client, st *state.State) chan event.Event {
 
 func consumeEvents(events chan event.Event, handlerFactory func(t event.Type) handler.Handler, result chan *event.HandleEventResult) {
 	for {
-		select {
-		case e := <-events:
-			h := handlerFactory(e.GetType())
-			err := h.Handle(e)
-			if err != nil {
-				fmt.Printf("handle event error eventType:%v err:%v\n", e.GetType(), err)
-			}
-			result <- &event.HandleEventResult{Event: e, Err: err}
+		e := <-events
+		h := handlerFactory(e.GetType())
+		err := h.Handle(e)
+		errMsg := ""
+		if err != nil {
+			errMsg = err.Error()
+			fmt.Printf("handle event error eventType:%v err:%v\n", e.GetType(), err)
 		}
+		result <- &event.HandleEventResult{Event: e, Err: errMsg}
+
 	}
 }
 
