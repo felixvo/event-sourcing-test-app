@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/felixvo/lmax/cmd/consumer/api"
+	"github.com/felixvo/lmax/pkg/lhttp"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"strings"
@@ -40,6 +41,7 @@ func main() {
 
 	// web api
 	r := gin.Default()
+	r.Use(lhttp.CORSMiddleware())
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",

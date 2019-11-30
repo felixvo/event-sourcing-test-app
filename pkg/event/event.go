@@ -5,7 +5,7 @@ import "encoding"
 type Type string
 
 const (
-	OrderType   Type = "OrderType"
+	OrderType   Type = "Order"
 	TopUpType   Type = "TopUp"
 	AddItemType Type = "AddItem"
 )
