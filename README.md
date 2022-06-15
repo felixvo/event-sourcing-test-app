@@ -94,8 +94,5 @@ Thank you for reading!
 I hope the source code is clean enough for you to understand :scream:
 
 ## Thoughts
-Did you curious why I name my repository `lmax`?
-By the time I write this post, I'm researching about this [LMAX architecture](https://martinfowler.com/articles/lmax.html) [Github](https://github.com/LMAX-Exchange/disruptor/wiki).
-It's quite interesting. Currently, I fetch new events and push to a `channel`,  we can use `LMAX Disruptor` to optimize the latency but there is no stable implement of `LMAX Disruptor` in `go`.
 
 
